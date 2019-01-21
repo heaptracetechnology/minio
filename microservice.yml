@@ -1,0 +1,218 @@
+omg: 1
+lifecycle:
+  startup:
+    command: ["go", "build", "minio"]
+info:
+  version: 1.0.0
+  title: Minio 
+  description: This is a Minio service
+  contact:
+    name: RohitS
+    url: https://github.com/ht68rohit
+    email: rohits@heptrace.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT 
+actions:
+  newclient:
+    help: Initializes a new client
+    http:
+      port: 5000
+      method: post
+      path: /newclient
+      contentType: application/json
+    arguments:
+      endpoint:
+        type: string
+        in: requestBody
+        required: true
+        help: object storage endpoint.
+      accessKeyID:
+        type: string
+        in: requestBody
+        required: true
+        help: access key for  object storage
+      secretAccessKey: 
+        type: string
+        in: requestBody
+        required: true
+        help: secret key for  object storage
+      ssl: 
+        type: boolean
+        in: requestBody
+        required: true  
+        help: if value is true, then HTTPS else HTTP (insecure)
+    output:
+      contentType: application/json
+      type: string
+  makebucket:
+    help: Create a New Bucket
+    http:
+      port: 5000
+      method: post
+      path: /makebucket
+      contentType: application/json
+    arguments:
+      bucketName:
+        type: string
+        in: requestBody
+        required: true
+        help: Name of the bucket
+      location: 
+        type: string
+        in: requestBody
+        required: true
+        help: Region where the bucket is to be created
+    output: 
+      contentType: application/json
+      type: string
+  bucketlist:
+    help: List all buckets
+    http: 
+      port: 5000
+      method: get
+      path: /getbucketlist
+    output:
+      contentType: application/json
+      type: list
+  bucketexists: 
+    help: Checks if a bucket exists
+    http: 
+      port: 5000
+      method: post
+      path: /bucketexists
+      contentType: application/json
+    arguments:
+      bucketname:
+        type: string
+        in: requestBody
+        required: true
+        help: Check for bucket existence
+    output:
+      contentType: application/json
+      type: boolean
+  removebucket: 
+    help: Removes a bucket, bucket should be empty to be successfully removed
+    http: 
+      port: 5000
+      method: delete
+      path: /removebucket/{{bucketname}}
+      contentType: application/json
+    arguments:
+      bucketname:
+        type: string
+        in: path
+        required: true
+        help: Check for bucket existence
+    output:
+      contentType: application/json
+      type: boolean
+  objectlist: 
+    help: Lists objects in a bucket
+    http: 
+      port: 5000
+      method: get
+      path: /getobjectlist
+    arguments:
+      buckectname:
+        type: string
+        in: requestBody
+        required: true
+        help: Name of the bucket
+      objectprefix:
+        type: string
+        in: requestBody
+        required: true
+        help: Prefix of objects to be listed
+      recursive:
+        type: boolean
+        in: requestBody
+        required: true
+        help: Listing type(true indicates recursive style listing and false indicates directory style listing delimited by '/'.)
+    output:
+      contentType: application/json
+      type: list
+  getobject: 
+    help: Returns a stream of the object data
+    http: 
+      port: 5000
+      method: get
+      path: /getobject
+      contentType: application/json
+    arguments:
+      bucketname:
+        type: string
+        in: requestBody
+        required: true
+      objectname:
+        type: string
+        in: requestBody
+        required: true
+    output:
+      contentType: application/json
+      type: object
+  putobject: 
+    help: Returns a stream of the object data
+    http: 
+      port: 5000
+      method: put
+      path: /putobject/{{bucketid}}
+      contentType: application/json
+    arguments:
+      bucketid:
+        type: string
+        in: path
+        required: true
+      bucketname:
+        type: string
+        in: requestBody
+        required: true
+      objectname:
+        type: string
+        in: requestBody
+        required: true
+      opts:
+        type: object
+        in: requestBody
+        required: true
+    output:
+      contentType: application/json
+      type: object
+  copyobject: 
+    help: Create or replace an object through server-side copying of an existing object
+    http:
+      port: 5000
+      method: post
+      path: /copyobject
+      contentType: application/json
+    arguments:
+      dst:
+        type: object
+        in: requestBody
+        required: true
+      src:
+        type: object
+        in: requestBody
+        required: true
+    output:
+      contentType: application/json
+      type: string
+  removeobject: 
+    help: Create or replace an object through server-side copying of an existing object
+    http:
+      port: 5000
+      method: delete
+      path: /removeobject
+      contentType: application/json
+    arguments:
+      bucketname:
+        type: string
+        in: requestBody
+        required: true
+      objectname:
+        type: string
+        in: requestBody
+        required: true
+    output:
+      contentType: application/json
+      type: string  
