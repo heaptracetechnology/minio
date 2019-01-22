@@ -1,7 +1,7 @@
 omg: 1
 lifecycle:
   startup:
-    command: ["go", "build", "minio"]
+    command: ["go", "Minio"]
 info:
   version: 1.0.0
   title: Minio 
@@ -43,8 +43,7 @@ actions:
         required: true  
         help: if value is true, then HTTPS else HTTP (insecure)
     output:
-      contentType: application/json
-      type: string
+      type: map
   makebucket:
     help: Create a New Bucket
     http:
@@ -64,8 +63,7 @@ actions:
         required: true
         help: Region where the bucket is to be created
     output: 
-      contentType: application/json
-      type: string
+      type: map
   bucketlist:
     help: List all buckets
     http: 
@@ -195,8 +193,7 @@ actions:
         in: requestBody
         required: true
     output:
-      contentType: application/json
-      type: string
+      type: map
   removeobject: 
     help: Create or replace an object through server-side copying of an existing object
     http:
@@ -214,5 +211,19 @@ actions:
         in: requestBody
         required: true
     output:
-      contentType: application/json
-      type: string  
+      type: map 
+environment:
+  clientid:
+    type: string
+    pattern: ^[a-zA-Z0-9_]*$
+    required: true
+  clientsecret:
+    type: string
+    pattern: ^[a-zA-Z0-9_]*$
+    required: true
+  server:
+    type: string
+    pattern: ^[a-zA-Z0-9_]*$
+    required: true
+    
+    
