@@ -1,13 +1,15 @@
-#TODO :: Need to implement 
-
 FROM golang
 
 RUN go get -u github.com/minio/minio-go
 
-WORKDIR Minio
+RUN go get github.com/gorilla/mux
 
-ADD . Minio
+WORKDIR /go/src/github.com/user/minio
 
-ENTRYPOINT Minio RUN
+ADD . /go/src/github.com/user/minio
+
+RUN go install github.com/user/minio
+
+ENTRYPOINT minio
 
 EXPOSE 5000

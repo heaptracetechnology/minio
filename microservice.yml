@@ -1,7 +1,7 @@
 omg: 1
 lifecycle:
   startup:
-    command: ["go", "Minio"]
+    command: ["minio"]
 info:
   version: 1.0.0
   title: Minio 
@@ -14,36 +14,6 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT 
 actions:
-  newclient:
-    help: Initializes a new client
-    http:
-      port: 5000
-      method: post
-      path: /newclient
-      contentType: application/json
-    arguments:
-      endpoint:
-        type: string
-        in: requestBody
-        required: true
-        help: object storage endpoint.
-      accessKeyID:
-        type: string
-        in: requestBody
-        required: true
-        help: access key for  object storage
-      secretAccessKey: 
-        type: string
-        in: requestBody
-        required: true
-        help: secret key for  object storage
-      ssl: 
-        type: boolean
-        in: requestBody
-        required: true  
-        help: if value is true, then HTTPS else HTTP (insecure)
-    output:
-      type: map
   makebucket:
     help: Create a New Bucket
     http:
@@ -52,10 +22,11 @@ actions:
       path: /makebucket
       contentType: application/json
     arguments:
-      bucketName:
+      name:
         type: string
         in: requestBody
         required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
         help: Name of the bucket
       location: 
         type: string
@@ -63,7 +34,7 @@ actions:
         required: true
         help: Region where the bucket is to be created
     output: 
-      type: map
+      type: string
   bucketlist:
     help: List all buckets
     http: 
@@ -81,35 +52,34 @@ actions:
       path: /bucketexists
       contentType: application/json
     arguments:
-      bucketname:
+      name:
         type: string
         in: requestBody
         required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
         help: Check for bucket existence
     output:
-      contentType: application/json
-      type: boolean
+      type: string
   removebucket: 
     help: Removes a bucket, bucket should be empty to be successfully removed
     http: 
       port: 5000
       method: delete
-      path: /removebucket/{{bucketname}}
+      path: /removebucket
       contentType: application/json
     arguments:
-      bucketname:
+      name:
         type: string
-        in: path
-        required: true
-        help: Check for bucket existence
+        in: requestBody
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
+        help: Bucket Name which is to be removed
     output:
-      contentType: application/json
-      type: boolean
+      type: string
   objectlist: 
     help: Lists objects in a bucket
     http: 
       port: 5000
-      method: get
+      method: post
       path: /getobjectlist
     arguments:
       buckectname:
@@ -142,6 +112,7 @@ actions:
         type: string
         in: requestBody
         required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
       objectname:
         type: string
         in: requestBody
@@ -165,6 +136,7 @@ actions:
         type: string
         in: requestBody
         required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
       objectname:
         type: string
         in: requestBody
@@ -206,6 +178,7 @@ actions:
         type: string
         in: requestBody
         required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
       objectname:
         type: string
         in: requestBody
@@ -213,17 +186,20 @@ actions:
     output:
       type: map 
 environment:
-  clientid:
+  endpoint:
     type: string
-    pattern: ^[a-zA-Z0-9_]*$
     required: true
-  clientsecret:
+    #pattern: ^[a-zA-Z0-9_]*$
+    help: object storage endpoint.
+  accessKeyID:
     type: string
-    pattern: ^[a-zA-Z0-9_]*$
     required: true
-  server:
+    pattern: ^[a-zA-Z0-9_]*$
+    help: access key for  object storage
+  secretAccessKey:
     type: string
-    pattern: ^[a-zA-Z0-9_]*$
     required: true
+    #pattern: ^[a-zA-Z0-9_]*$
+    help: secret key for  object storage
     
     
