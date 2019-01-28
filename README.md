@@ -41,14 +41,12 @@ An OMG service for Minio.
 
 * *omg exec copyobject  -a srcbucketname=<SRC_BUCKET_NAME> -a srcobjectname=<SRC_OBJECT_NAME> -a dstbucketname=<DST_BUCKET_NAME> -a dstobjectname=<DST_OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
 
-##### RemoveObject
-
-* *omg exec removeobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
-
 ##### StatObject
 
 * *omg exec statobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
 
 
+
 ### License
 [MIT](https://choosealicense.com/licenses/mit/)
+
