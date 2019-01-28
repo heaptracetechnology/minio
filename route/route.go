@@ -33,7 +33,7 @@ var routes = Routes {
 
 	Route {
         "RemoveBucket",
-        "DELETE",
+        "PUT",
         "/removebucket",
         BucketOperation.RemoveBucket,
 	},
@@ -43,7 +43,49 @@ var routes = Routes {
         "POST",
         "/bucketexists",
         BucketOperation.BucketExist,
-    },  
+    }, 
+
+    Route {
+        "GetObjectList",
+        "POST",
+        "/getobjectlist",
+        BucketOperation.GetObjectList,
+    },
+
+    Route {
+        "GetObject",
+        "POST",
+        "/getobject",
+        BucketOperation.GetObject,
+    },
+    
+    Route {
+        "PutObject",
+        "PUT",
+        "/putobject",
+        BucketOperation.PutObject,
+    },
+    
+    Route {
+        "CopyObject",
+        "POST",
+        "/copyobject",
+        BucketOperation.CopyObject,
+    },
+    
+    Route {
+        "RemoveObject",
+        "PUT",
+        "/removeobject",
+        BucketOperation.RemoveObject,
+    },
+    
+    Route {
+        "StatObject",
+        "POST",
+        "/statobject",
+        BucketOperation.StatObject,
+    },     
 }
 
 func NewRouter() *mux.Router {

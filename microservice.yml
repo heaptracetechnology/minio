@@ -60,11 +60,11 @@ actions:
         help: Check for bucket existence
     output:
       type: string
-  removebucket: 
+  removebucket:   
     help: Removes a bucket, bucket should be empty to be successfully removed
     http: 
       port: 5000
-      method: delete
+      method: put
       path: /removebucket
       contentType: application/json
     arguments:
@@ -81,8 +81,9 @@ actions:
       port: 5000
       method: post
       path: /getobjectlist
+      contentType: application/json
     arguments:
-      buckectname:
+      name:
         type: string
         in: requestBody
         required: true
@@ -99,16 +100,16 @@ actions:
         help: Listing type(true indicates recursive style listing and false indicates directory style listing delimited by '/'.)
     output:
       contentType: application/json
-      type: list
+      type: object
   getobject: 
     help: Returns a stream of the object data
     http: 
       port: 5000
-      method: get
+      method: post
       path: /getobject
       contentType: application/json
     arguments:
-      bucketname:
+      name:
         type: string
         in: requestBody
         required: true
@@ -118,21 +119,20 @@ actions:
         in: requestBody
         required: true
     output:
-      contentType: application/json
-      type: object
+      type: string
   putobject: 
     help: Returns a stream of the object data
     http: 
       port: 5000
       method: put
-      path: /putobject/{{bucketid}}
+      path: /putobject
       contentType: application/json
     arguments:
-      bucketid:
-        type: string
-        in: path
-        required: true
-      bucketname:
+      # bucketid:
+      #   type: string
+      #   in: path
+      #   required: true
+      name:
         type: string
         in: requestBody
         required: true
@@ -141,13 +141,16 @@ actions:
         type: string
         in: requestBody
         required: true
-      opts:
-        type: object
+      filename:
+        type: string
         in: requestBody
         required: true
+      # opts:
+      #   type: object
+      #   in: requestBody
+      #   required: true
     output:
-      contentType: application/json
-      type: object
+      type: string  
   copyobject: 
     help: Create or replace an object through server-side copying of an existing object
     http:
@@ -156,25 +159,33 @@ actions:
       path: /copyobject
       contentType: application/json
     arguments:
-      dst:
-        type: object
+      srcbucketname:
+        type: string
         in: requestBody
         required: true
-      src:
-        type: object
+      srcobjectname:
+        type: string
+        in: requestBody
+        required: true
+      dstbucketname:
+        type: string
+        in: requestBody
+        required: true
+      dstobjectname:
+        type: string
         in: requestBody
         required: true
     output:
-      type: map
+      type: string
   removeobject: 
-    help: Create or replace an object through server-side copying of an existing object
+    help: Removes an object.
     http:
       port: 5000
-      method: delete
+      method: put
       path: /removeobject
       contentType: application/json
     arguments:
-      bucketname:
+      name:
         type: string
         in: requestBody
         required: true
@@ -184,7 +195,27 @@ actions:
         in: requestBody
         required: true
     output:
-      type: map 
+      type: string
+  statobject:
+    help: Fetch metadata of an object.
+    http:
+      port: 5000
+      method: post
+      path: /statobject
+      contentType: application/json
+    arguments:
+      name:
+        type: string
+        in: requestBody
+        required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
+      objectname:
+        type: string
+        in: requestBody
+        required: true
+    output:
+      contentType: application/json
+      type: object
 environment:
   endpoint:
     type: string
