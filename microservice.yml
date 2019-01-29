@@ -91,7 +91,6 @@ actions:
       objectprefix:
         type: string
         in: requestBody
-        required: true
         help: Prefix of objects to be listed
       recursive:
         type: boolean
@@ -101,7 +100,7 @@ actions:
     output:
       contentType: application/json
       type: object
-  getobject: 
+  getobject:          
     help: Returns a stream of the object data
     http: 
       port: 5000
@@ -118,6 +117,10 @@ actions:
         type: string
         in: requestBody
         required: true
+      filepath:
+        type: string
+        in: requestBody
+        required: true
     output:
       type: string
   putobject: 
@@ -128,10 +131,6 @@ actions:
       path: /putobject
       contentType: application/json
     arguments:
-      # bucketid:
-      #   type: string
-      #   in: path
-      #   required: true
       name:
         type: string
         in: requestBody
@@ -145,10 +144,6 @@ actions:
         type: string
         in: requestBody
         required: true
-      # opts:
-      #   type: object
-      #   in: requestBody
-      #   required: true
     output:
       type: string  
   copyobject: 

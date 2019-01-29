@@ -31,7 +31,7 @@ An OMG service for Minio.
 
 ##### GetObject
 
-* *omg exec getobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec getobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -a filepath=<FILE_PATH> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
 
 ##### PutObject
 
@@ -49,4 +49,3 @@ An OMG service for Minio.
 
 ### License
 [MIT](https://choosealicense.com/licenses/mit/)
-

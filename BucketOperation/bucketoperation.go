@@ -13,63 +13,60 @@ import (
 
 type Bucket struct 
 {
-	Name    string `json:"name"`
-	Region  string `json:"region"`
-	Prefix  string `json:"prefix"`
-	ObjectName string `json:"objectname"`
-	FileName string `json:"filename"`
+	Name    	  string `json:"name"`
+	Region  	  string `json:"region"`
+	Prefix  	  string `json:"prefix"`
+	ObjectName 	  string `json:"objectname"`
+	FileName 	  string `json:"filename"`
+	FilePath      string `json:"filepath"`
 	SrcBucketName string `json:"srcbucketname"`
 	SrcObjectName string `json:"srcobjectname"`
 	DstBucketName string `json:"dstbucketname"`
 	DstObjectName string `json:"dstobjectname"`
 }
 
+// ********** MinioClient **********
+func MinioClient() (*minio.Client, error){
 
-// ********** GetBucketList **********
-func GetBucketList(w http.ResponseWriter, _ *http.Request) {
-	
 	var endpoint = os.Getenv("endpoint")
 	var accessKeyID = os.Getenv("accessKeyID")
 	var secretAccessKey = os.Getenv("secretAccessKey")
 	useSSL := true
 
-  // Initialize minio client object.
-  minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-  if err != nil {
-	  log.Fatalln(err)
-  }
+  	// Initialize minio client object.
+  	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+  	if err != nil {
+		log.Fatalln(err)
+	  }
+	return minioClient,nil
+}
+
+// ********** GetBucketList **********
+func GetBucketList(w http.ResponseWriter, _ *http.Request) {
+		
+	minioClient,err := MinioClient()
   
-  buckets, err := minioClient.ListBuckets()
-  if err != nil {
+  	buckets, err := minioClient.ListBuckets()
+  	if err != nil {
 	  fmt.Println(err)
 	  return
-  }
+  	}
 
-  bytes, err := json.Marshal(buckets)
-  if err != nil {
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
-
-  writeJsonResponse(w, bytes)
+	bytes, err := json.Marshal(buckets)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	
+  	writeJsonResponse(w, bytes)
 }
 
 // ********** CreateBucket **********
 func CreateBucket(w http.ResponseWriter, r *http.Request) {
 
-
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-  // Initialize minio client object.
-  minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-  if err != nil {
-	  log.Fatalln(err)
-  }
+	minioClient,err := MinioClient()
   
-  b, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
+	b, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -87,7 +84,6 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         exists, err := minioClient.BucketExists(bucket.Name)
         if err == nil && exists {
-			log.Printf("We already own %s\n", bucket.Name)
 			result := "We already own " + bucket.Name
 			bytes, err := json.Marshal(result)
 	  		if err != nil {
@@ -98,7 +94,6 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
             log.Fatalln(err)
         }
     } else {
-		log.Printf("Successfully created %s\n", bucket.Name)
 		result := "Successfully created " + bucket.Name
 		bytes, err := json.Marshal(result)
 	  	if err != nil {
@@ -106,66 +101,42 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
 		}
 	   	writeJsonResponse(w, bytes)
     }
-
 }
 
 // ********** RemoveBucket **********
 func RemoveBucket(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
+	minioClient,err := MinioClient()
 
-  // Initialize minio client object.
-  minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-  if err != nil {
-	  log.Fatalln(err)
-  }
 	b, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
+	defer r.Body.Close()
 	if err != nil {
-	http.Error(w, err.Error(), 500)
-	return
+		http.Error(w, err.Error(), 500)
+		return
 	}
 
 	// Unmarshal
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
 	if err != nil {
-	http.Error(w, err.Error(), 500)
-	return
+		http.Error(w, err.Error(), 500)
+		return
 	}
+	
   	err = minioClient.RemoveBucket(bucket.Name)
   	if err != nil {
-	bytes, err := json.Marshal("Bucket removed failed.")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	writeJsonResponse(w, bytes)
-  }else{
-	bytes, err := json.Marshal("Bucket removed successfully.")
-	fmt.Println(bytes)
-	if err != nil {
-	  http.Error(w, err.Error(), http.StatusInternalServerError)
-	  }
-	  writeJsonResponse(w, bytes)
-  }
+		bytes, _ := json.Marshal("Bucket removed failed.")
+		writeJsonResponse(w, bytes)
+    }else{
+		bytes, _ := json.Marshal("Bucket removed successfully.")
+		writeJsonResponse(w, bytes)
+    }
 }
 
 // ********** BucketExist **********
 func BucketExist(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-
-  	// Initialize minio client object.
-  	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-  	if err != nil {
-		  log.Fatalln(err)
-  	}
+	minioClient,err := MinioClient()
 
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -187,17 +158,10 @@ func BucketExist(w http.ResponseWriter, r *http.Request) {
     	return
 	}
 	if found {
-		fmt.Println("Bucket found")
-		bytes, err := json.Marshal("Bucket found")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		bytes, _ := json.Marshal("Bucket found")
 		writeJsonResponse(w, bytes)
 	}else{
-		bytes, err := json.Marshal("Bucket not found")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		bytes, _ := json.Marshal("Bucket not found")
 		writeJsonResponse(w, bytes)
 	}
 }
@@ -205,16 +169,7 @@ func BucketExist(w http.ResponseWriter, r *http.Request) {
 // ********** GetObjectList **********
 func GetObjectList(w http.ResponseWriter, r *http.Request) {
 	
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-	log.Fatalln(err)
-	}
+	minioClient,err := MinioClient()
  
    	b, err := ioutil.ReadAll(r.Body)
    	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
@@ -230,37 +185,24 @@ func GetObjectList(w http.ResponseWriter, r *http.Request) {
 	   http.Error(w, err.Error(), 500)
 	   return
    	}
-   doneCh := make(chan struct{})
+    doneCh := make(chan struct{})
 
-   // Indicate to our routine to exit cleanly upon return.
-   defer close(doneCh)
-   isRecursive := true
+    // Indicate to our routine to exit cleanly upon return.
+    defer close(doneCh)
+    isRecursive := true
 
-   objectCh := minioClient.ListObjects(bucket.Name, bucket.Prefix, isRecursive, doneCh)
-   bytes, err := json.Marshal(objectCh)
-	 if err != nil {
-	   http.Error(w, err.Error(), http.StatusInternalServerError)
-   }
-	  writeJsonResponse(w, bytes)
+    objectCh := minioClient.ListObjects(bucket.Name, bucket.Prefix, isRecursive, doneCh)
+    bytes, _ := json.Marshal(objectCh)
+	writeJsonResponse(w, bytes)
 }
 
 // ********** GetObject **********
 func GetObject(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
+	minioClient,err := MinioClient()
 
 	b, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
+	defer r.Body.Close()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -279,7 +221,8 @@ func GetObject(w http.ResponseWriter, r *http.Request) {
     	fmt.Println(err)
     	return
 	}
-	localFile, err := os.Create("/home/admin1/work/src/github.com/user/minio/getobjectfile.txt")
+
+	localFile, err := os.Create(bucket.FilePath)
 	if err != nil {
     	fmt.Println(err)
     	return
@@ -290,10 +233,7 @@ func GetObject(w http.ResponseWriter, r *http.Request) {
     	return
 	}
 
-	bytes, err := json.Marshal(object)
-  	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	bytes, _ := json.Marshal(object)
     writeJsonResponse(w, bytes)
 
 }
@@ -301,18 +241,8 @@ func GetObject(w http.ResponseWriter, r *http.Request) {
 //********** PutObject **********
 func PutObject(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	minioClient,err := MinioClient()
 
-	//*************** fetching req body content
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -328,13 +258,11 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//***************PutObject operation
 	file, err := os.Open(bucket.FileName)
 	if err != nil {
     	fmt.Println(err)
     	return
 	}
-	fmt.Println(file)
 	defer file.Close()
 
 	fileStat, err := file.Stat()
@@ -349,28 +277,15 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
     	return
 	}
 	fmt.Println("Successfully uploaded bytes: ", n)
-	bytes, err := json.Marshal(n)
-  	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	bytes, _ := json.Marshal(n)
     writeJsonResponse(w, bytes)
 }
 
 //********** CopyObject **********
 func CopyObject(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	minioClient,err := MinioClient()
 
-	//*************** fetching req body content
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -388,8 +303,6 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
 
 	// Source object
 	src := minio.NewSourceInfo(bucket.SrcBucketName, bucket.SrcObjectName, nil)
-	fmt.Println(bucket.SrcBucketName)
-	fmt.Println(bucket.SrcObjectName)
 
 	// Destination object
 	dst, err := minio.NewDestinationInfo(bucket.DstBucketName, bucket.DstObjectName, nil, nil)
@@ -397,8 +310,6 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
     	fmt.Println(err)
     	return
 	}
-	fmt.Println(bucket.DstBucketName)
-	fmt.Println(bucket.DstObjectName)
 
 	// Copy object call
 	err = minioClient.CopyObject(dst, src)
@@ -406,10 +317,7 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
     	fmt.Println(err)
     	return
 	}else{
-		bytes, err := json.Marshal("Copy successful")
-  		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		bytes, _ := json.Marshal("Copy successful")
    		writeJsonResponse(w, bytes)
 	}
 }
@@ -417,16 +325,7 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
 //********** RemoveObject **********
 func RemoveObject(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	minioClient,err := MinioClient()
 
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -448,10 +347,7 @@ func RemoveObject(w http.ResponseWriter, r *http.Request) {
     	fmt.Println(err)
     	return
 	}else{
-		bytes, err := json.Marshal("Object removed successfully")
-  		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		bytes, _ := json.Marshal("Object removed successfully")
    		writeJsonResponse(w, bytes)
 	}
 }
@@ -459,18 +355,8 @@ func RemoveObject(w http.ResponseWriter, r *http.Request) {
 //********** StatObject **********
 func StatObject(w http.ResponseWriter, r *http.Request) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
-	useSSL := true
-	
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	minioClient,err := MinioClient()
 
-	//*************** fetching req body content
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -491,11 +377,7 @@ func StatObject(w http.ResponseWriter, r *http.Request) {
     	fmt.Println(err)
     	return
 	}else{
-		bytes, err := json.Marshal(objInfo)
-  		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		fmt.Println(objInfo)
+		bytes, _ := json.Marshal(objInfo)
    		writeJsonResponse(w, bytes)
 	}
 }
