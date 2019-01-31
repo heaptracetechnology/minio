@@ -26,26 +26,29 @@ An OMG service for Minio.
 
 ##### GetObjectList
 
-* *omg exec getobjectlist  -a name=<BUCKET_NAME> -a objectprefix=<OBJECT_PREFIX> -a recursive=<TRUE/FALSE> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec getobjectlist  -a name=<BUCKET_NAME> -a objectprefix=<OBJECT_PREFIX> -a recursive=<TRUE/FALSE> -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 * Recursive = "true indicates recursive style listing and false indicates directory style listing delimited by '/'."
 
 ##### GetObject
 
-* *omg exec getobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -a filepath=<FILE_PATH> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec getobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -a filepath=<FILE_PATH> -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 
 ##### PutObject
 
-* *omg exec putobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec putobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 
 ##### CopyObject
 
-* *omg exec copyobject  -a srcbucketname=<SRC_BUCKET_NAME> -a srcobjectname=<SRC_OBJECT_NAME> -a dstbucketname=<DST_BUCKET_NAME> -a dstobjectname=<DST_OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec copyobject  -a srcbucketname=<SRC_BUCKET_NAME> -a srcobjectname=<SRC_OBJECT_NAME> -a dstbucketname=<DST_BUCKET_NAME> -a dstobjectname=<DST_OBJECT_NAME> -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 
 ##### StatObject
 
-* *omg exec statobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint="play.minio.io:9000" -e accessKeyID="Q3AM3UQ867SPQQA43P2F" -e secretAccessKey="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"*
+* *omg exec statobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 
+##### FPutObject
 
+* *omg exec fputobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -a filepath=<FILE_PATH> -e endpoint=<ENTER_ENDPOINT> -e accessKeyID=<ACCESS_KEY_ID> -e secretAccessKey=<SECRET_ACCESS_KEY>*
 
 ### License
 [MIT](https://choosealicense.com/licenses/mit/)
+

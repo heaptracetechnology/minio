@@ -37,7 +37,7 @@ actions:
       type: string
   bucketlist:
     help: List all buckets
-    http: 
+    http:
       port: 5000
       method: get
       path: /getbucketlist
@@ -100,7 +100,7 @@ actions:
     output:
       contentType: application/json
       type: object
-  getobject:          
+  getobject: 
     help: Returns a stream of the object data
     http: 
       port: 5000
@@ -114,10 +114,6 @@ actions:
         required: true
         pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
       objectname:
-        type: string
-        in: requestBody
-        required: true
-      filepath:
         type: string
         in: requestBody
         required: true
@@ -211,6 +207,44 @@ actions:
     output:
       contentType: application/json
       type: object
+  getbucketpolicy:
+    help: Get access permissions on a bucket or a prefix
+    http:
+      port: 5000
+      method: post
+      path: /getbucketpolicy
+      contentType: application/json
+    arguments:
+      name:
+        type: string
+        in: requestBody
+        required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
+    output:
+      type: string
+  fputobject:
+    help: Uploads contents from a file to objectName
+    http: 
+      port: 5000
+      method: put
+      path: /fputobject
+      contentType: application/json
+    arguments:
+      name:
+        type: string
+        in: requestBody
+        required: true
+        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
+      objectname:
+        type: string
+        in: requestBody
+        required: true
+      filepath:
+        type: string
+        in: requestBody
+        required: true
+    output:
+      type: string
 environment:
   endpoint:
     type: string

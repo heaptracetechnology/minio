@@ -1,10 +1,11 @@
 package route
 
 import (
+    "github.com/gorilla/mux"
+    "github.com/user/minio/BucketOperation"
+    "github.com/user/minio/ObjectOperation"
     "log"
     "net/http"
-	"github.com/gorilla/mux"
-	"github.com/user/minio/BucketOperation"
 )
 
 type Route struct {
@@ -16,90 +17,104 @@ type Route struct {
 
 type Routes []Route
 
-var routes = Routes {
-    Route {
+var routes = Routes{
+    Route{
         "GetBucketList",
         "GET",
         "/getbucketlist",
         BucketOperation.GetBucketList,
     },
-    
-    Route {
+
+    Route{
         "CreateBucket",
         "POST",
         "/makebucket",
         BucketOperation.CreateBucket,
-	},
+    },
 
-	Route {
+    Route{
         "RemoveBucket",
         "PUT",
         "/removebucket",
         BucketOperation.RemoveBucket,
-	},
+    },
 
-    Route {
+    Route{
         "BucketExist",
         "POST",
         "/bucketexists",
         BucketOperation.BucketExist,
-    }, 
+    },
 
-    Route {
+    Route{
         "GetObjectList",
         "POST",
         "/getobjectlist",
-        BucketOperation.GetObjectList,
+        ObjectOperation.GetObjectList,
     },
 
-    Route {
+    Route{
         "GetObject",
         "POST",
         "/getobject",
-        BucketOperation.GetObject,
+        ObjectOperation.GetObject,
     },
-    
-    Route {
+
+    Route{
         "PutObject",
         "PUT",
         "/putobject",
-        BucketOperation.PutObject,
+        ObjectOperation.PutObject,
     },
-    
-    Route {
+
+    Route{
         "CopyObject",
         "POST",
         "/copyobject",
-        BucketOperation.CopyObject,
+        ObjectOperation.CopyObject,
     },
-    
-    Route {
+
+    Route{
         "RemoveObject",
         "PUT",
         "/removeobject",
-        BucketOperation.RemoveObject,
+        ObjectOperation.RemoveObject,
     },
-    
-    Route {
+
+    Route{
         "StatObject",
         "POST",
         "/statobject",
-        BucketOperation.StatObject,
-    },     
+        ObjectOperation.StatObject,
+    },
+
+    Route{
+        "GetBucketPolicy",
+        "POST",
+        "/getbucketpolicy",
+        BucketOperation.GetBucketPolicy,
+    },
+
+    Route{
+        "FPutObject",
+        "PUT",
+        "/fputobject",
+        ObjectOperation.FPutObject,
+    },
 }
 
 func NewRouter() *mux.Router {
     router := mux.NewRouter().StrictSlash(true)
-    for _, route := range routes { 
+    for _, route := range routes {
         var handler http.Handler
         log.Println(route.Name)
         handler = route.HandlerFunc
-        
+
         router.
-         Methods(route.Method).
-         Path(route.Pattern).
-         Name(route.Name).
-         Handler(handler)
+            Methods(route.Method).
+            Path(route.Pattern).
+            Name(route.Name).
+            Handler(handler)
     }
     return router
 }
