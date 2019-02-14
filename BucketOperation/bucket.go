@@ -63,7 +63,7 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Unmarshal
+	
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
 	if err != nil {
@@ -106,7 +106,6 @@ func RemoveBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Unmarshal
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
 	if err != nil {
@@ -135,7 +134,6 @@ func BucketExist(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	// Unmarshal
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
 	if err != nil {
@@ -168,7 +166,7 @@ func GetBucketPolicy(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	// Unmarshal
+	
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
 	if err != nil {

@@ -7,8 +7,8 @@ info:
   title: Minio 
   description: This is a Minio service
   contact:
-    name: RohitS
-    url: https://github.com/ht68rohit
+    name: Rohit Shetty
+    url: https://github.com/heaptracetechnology/minio
     email: rohits@heptrace.com
   license:
     name: MIT
@@ -35,7 +35,7 @@ actions:
         help: Region where the bucket is to be created
     output: 
       type: string
-  bucketlist:
+  listbuckets:
     help: List all buckets
     http:
       port: 5000
@@ -44,7 +44,7 @@ actions:
     output:
       contentType: application/json
       type: list
-  bucketexists: 
+  existsbucket: 
     help: Checks if a bucket exists
     http: 
       port: 5000
@@ -75,7 +75,7 @@ actions:
         help: Bucket Name which is to be removed
     output:
       type: string
-  objectlist: 
+  listobjects: 
     help: Lists objects in a bucket
     http: 
       port: 5000
@@ -249,7 +249,6 @@ environment:
   endpoint:
     type: string
     required: true
-    #pattern: ^[a-zA-Z0-9_]*$
     help: object storage endpoint.
   accessKeyID:
     type: string
@@ -259,7 +258,6 @@ environment:
   secretAccessKey:
     type: string
     required: true
-    #pattern: ^[a-zA-Z0-9_]*$
     help: secret key for  object storage
     
     
