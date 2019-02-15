@@ -16,12 +16,17 @@ type Bucket struct {
 	Prefix string `json:"prefix"`
 }
 
+type Message struct {
+    Success string `json:"success"`
+    Message string `json:"message"`
+}
+
 // ********** MinioClient **********
 func MinioClient() (*minio.Client, error) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
+	var endpoint = os.Getenv("END_POINT")
+	var accessKeyID = os.Getenv("ACCESS_KEY_ID")
+	var secretAccessKey = os.Getenv("SECRET_ACCESS_KEY")
 	useSSL := true
 
 	// Initialize minio client object.
@@ -39,7 +44,10 @@ func GetBucketList(w http.ResponseWriter, _ *http.Request) {
 
 	buckets, err := minioClient.ListBuckets()
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, err := json.Marshal(msg)
+		fmt.Println(err);
+		writeJsonResponse(w, msgbytes)
 		return
 	}
 
@@ -62,7 +70,6 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
 	
 	var bucket Bucket
 	err = json.Unmarshal(b, &bucket)
@@ -75,51 +82,18 @@ func CreateBucket(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		exists, err := minioClient.BucketExists(bucket.Name)
 		if err == nil && exists {
-			result := "We already own " + bucket.Name
-			bytes, err := json.Marshal(result)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
-			writeJsonResponse(w, bytes)
+			msg := Message{"false", "We already own " + bucket.Name}
+			msgbytes, _ := json.Marshal(msg)
+			writeJsonResponse(w, msgbytes)
+			return
 		} else {
 			log.Fatalln(err)
 		}
 	} else {
-		result := "Successfully created " + bucket.Name
-		bytes, err := json.Marshal(result)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		writeJsonResponse(w, bytes)
-	}
-}
-
-// ********** RemoveBucket **********
-func RemoveBucket(w http.ResponseWriter, r *http.Request) {
-
-	minioClient, err := MinioClient()
-
-	b, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		http.Error(w, err.Error(), 500)
+		msg := Message{"true", "Successfully created " + bucket.Name}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
-	}
-
-	var bucket Bucket
-	err = json.Unmarshal(b, &bucket)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	err = minioClient.RemoveBucket(bucket.Name)
-	if err != nil {
-		bytes, _ := json.Marshal("Bucket removed failed.")
-		writeJsonResponse(w, bytes)
-	} else {
-		bytes, _ := json.Marshal("Bucket removed successfully.")
-		writeJsonResponse(w, bytes)
 	}
 }
 
@@ -143,15 +117,21 @@ func BucketExist(w http.ResponseWriter, r *http.Request) {
 
 	found, err := minioClient.BucketExists(bucket.Name)
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	}
 	if found {
-		bytes, _ := json.Marshal("Bucket found")
-		writeJsonResponse(w, bytes)
+		msg := Message{"true", "Bucket found"}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
+		return
 	} else {
-		bytes, _ := json.Marshal("Bucket not found")
-		writeJsonResponse(w, bytes)
+		msg := Message{"false", "Bucket not found"}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
+		return
 	}
 }
 
@@ -176,7 +156,9 @@ func GetBucketPolicy(w http.ResponseWriter, r *http.Request) {
 
 	policy, err := minioClient.GetBucketPolicy(bucket.Name)
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", "Bucket policy not found"}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	} else {
 		bytes, _ := json.Marshal(policy)

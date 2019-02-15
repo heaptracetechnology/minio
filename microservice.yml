@@ -34,7 +34,14 @@ actions:
         required: true
         help: Region where the bucket is to be created
     output: 
-      type: string
+      type: object
+      properties:
+        message:
+          help: return the success message with bucket name if make bucket succes otherwise return errors message
+          type: string
+        success:
+          help: return true on succes and false on not found bucket
+          type: boolean
   listbuckets:
     help: List all buckets
     http:
@@ -44,6 +51,13 @@ actions:
     output:
       contentType: application/json
       type: list
+      properties:
+        name:
+          help: in the list object return the name of bucket
+          type: string
+        creationdate:
+          help: in the list object return the bucket creation date
+          type: string
   existsbucket: 
     help: Checks if a bucket exists
     http: 
@@ -59,22 +73,50 @@ actions:
         pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
         help: Check for bucket existence
     output:
-      type: string
-  removebucket:   
-    help: Removes a bucket, bucket should be empty to be successfully removed
-    http: 
+      type: object
+      properties:
+        message:
+          help: retun the bucket found if present the bucket otherwise return not found message
+          type: string
+        success:
+          help: return true on succes and false on not found bucket
+          type: boolean
+  statobject:
+    help: Fetch metadata of an object.
+    http:
       port: 5000
-      method: put
-      path: /removebucket
+      method: post
+      path: /statobject
       contentType: application/json
     arguments:
       name:
         type: string
         in: requestBody
+        required: true
         pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
-        help: Bucket Name which is to be removed
+      objectname:
+        type: string
+        in: requestBody
+        required: true
     output:
-      type: string
+      contentType: application/json
+      type: object
+      properties:
+        name:
+          help: name of the object
+          type: string
+        lastmodified:
+          help: object lat updated date
+          type: string
+        size:
+          help: size of the object
+          type: number
+        metadata:
+          help: detail metadata of the object 
+          type: object
+        owner:
+          help: owner detail with name and id
+          type: object
   listobjects: 
     help: Lists objects in a bucket
     http: 
@@ -99,7 +141,7 @@ actions:
         help: Listing type(true indicates recursive style listing and false indicates directory style listing delimited by '/'.)
     output:
       contentType: application/json
-      type: object
+      type: string
   getobject: 
     help: Returns a stream of the object data
     http: 
@@ -118,7 +160,7 @@ actions:
         in: requestBody
         required: true
     output:
-      type: string
+      type: object
   putobject: 
     help: Returns a stream of the object data
     http: 
@@ -141,7 +183,14 @@ actions:
         in: requestBody
         required: true
     output:
-      type: string  
+      type: object
+      properties:
+        message:
+          help: message return update success if success otherwise return error message
+          type: string
+        success:
+          help: return true on succes and false on fail update object
+          type: boolean 
   copyobject: 
     help: Create or replace an object through server-side copying of an existing object
     http:
@@ -167,46 +216,14 @@ actions:
         in: requestBody
         required: true
     output:
-      type: string
-  removeobject: 
-    help: Removes an object.
-    http:
-      port: 5000
-      method: put
-      path: /removeobject
-      contentType: application/json
-    arguments:
-      name:
-        type: string
-        in: requestBody
-        required: true
-        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
-      objectname:
-        type: string
-        in: requestBody
-        required: true
-    output:
-      type: string
-  statobject:
-    help: Fetch metadata of an object.
-    http:
-      port: 5000
-      method: post
-      path: /statobject
-      contentType: application/json
-    arguments:
-      name:
-        type: string
-        in: requestBody
-        required: true
-        pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
-      objectname:
-        type: string
-        in: requestBody
-        required: true
-    output:
-      contentType: application/json
       type: object
+      properties:
+        message:
+          help: message return copy success if success otherwise return error message
+          type: string
+        success:
+          help: return true on succes and false on copy object
+          type: boolean
   getbucketpolicy:
     help: Get access permissions on a bucket or a prefix
     http:
@@ -221,7 +238,15 @@ actions:
         required: true
         pattern: ^[a-z0-9]+(-[a-z0-9]+)*$
     output:
-      type: string
+      type: object
+      properties: 
+        version:
+          help: getting the verion detail.
+          type: string
+        statement: 
+          help: getting the list of statement object with effect, principal, action, resource, condition 
+          type: list
+  
   fputobject:
     help: Uploads contents from a file to objectName
     http: 
@@ -244,18 +269,25 @@ actions:
         in: requestBody
         required: true
     output:
-      type: string
+      type: object
+      properties: 
+        message:
+          help: return message on update
+          type: string
+        success: 
+          help: return success true or false 
+          type: list
 environment:
-  endpoint:
+  END_POINT:
     type: string
     required: true
     help: object storage endpoint.
-  accessKeyID:
+  ACCESS_KEY_ID:
     type: string
     required: true
     pattern: ^[a-zA-Z0-9_]*$
     help: access key for  object storage
-  secretAccessKey:
+  SECRET_ACCESS_KEY:
     type: string
     required: true
     help: secret key for  object storage

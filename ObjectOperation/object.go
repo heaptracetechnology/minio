@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/minio/minio-go"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,12 +22,17 @@ type BucketObject struct {
 	DstObjectName string `json:"dstobjectname"`
 }
 
+type Message struct {
+    Success string `json:"success"`
+    Message string `json:"message"`
+}
+
 // ********** MinioClient **********
 func MinioClient() (*minio.Client, error) {
 
-	var endpoint = os.Getenv("endpoint")
-	var accessKeyID = os.Getenv("accessKeyID")
-	var secretAccessKey = os.Getenv("secretAccessKey")
+	var endpoint = os.Getenv("END_POINT")
+	var accessKeyID = os.Getenv("ACCESS_KEY_ID")
+	var secretAccessKey = os.Getenv("SECRET_ACCESS_KEY")
 	useSSL := true
 
 	// Initialize minio client object.
@@ -130,7 +134,6 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("------bucket--->>>>", bucketobj)
 	file, err := os.Open(bucketobj.FileName)
 	if err != nil {
 		fmt.Println(err)
@@ -146,12 +149,16 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
 
 	n, err := minioClient.PutObject(bucketobj.Name, bucketobj.ObjectName, file, fileStat.Size(), minio.PutObjectOptions{ContentType: "application/octet-stream"})
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	}
-	fmt.Println("Successfully uploaded bytes: ", n)
-	bytes, _ := json.Marshal(n)
-	writeJsonResponse(w, bytes)
+
+	msg := Message{"true", "Successfully uploaded bytes: "+ string(n)}
+	msgbytes, _ := json.Marshal(msg)
+	writeJsonResponse(w, msgbytes)
+	return
 }
 
 //********** FPutObject **********
@@ -176,12 +183,15 @@ func FPutObject(w http.ResponseWriter, r *http.Request) {
 
 	n, err := minioClient.FPutObject(bucketobj.Name, bucketobj.ObjectName, bucketobj.FilePath, minio.PutObjectOptions{ContentType: "text/plain"})
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	}
-	fmt.Println("Successfully uploaded bytes: ", n)
-	bytes, _ := json.Marshal(n)
-	writeJsonResponse(w, bytes)
+	msg := Message{"true", "Successfully uploaded bytes: "+ string(n)}
+	msgbytes, _ := json.Marshal(msg)
+	writeJsonResponse(w, msgbytes)
+	return
 }
 
 //********** CopyObject **********
@@ -217,11 +227,14 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
 	// Copy object call
 	err = minioClient.CopyObject(dst, src)
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	} else {
-		bytes, _ := json.Marshal("Copy successful")
-		writeJsonResponse(w, bytes)
+		msg := Message{"true","Copy successful"}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 	}
 }
 
@@ -277,7 +290,9 @@ func StatObject(w http.ResponseWriter, r *http.Request) {
 
 	objInfo, err := minioClient.StatObject(bucketobj.Name, bucketobj.ObjectName, minio.StatObjectOptions{})
 	if err != nil {
-		fmt.Println(err)
+		msg := Message{"false", err.Error()}
+		msgbytes, _ := json.Marshal(msg)
+		writeJsonResponse(w, msgbytes)
 		return
 	} else {
 		bytes, _ := json.Marshal(objInfo)
@@ -289,3 +304,4 @@ func writeJsonResponse(w http.ResponseWriter, bytes []byte) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(bytes)
 }
+

@@ -33,13 +33,6 @@ var routes = Routes{
     },
 
     Route{
-        "RemoveBucket",
-        "PUT",
-        "/removebucket",
-        BucketOperation.RemoveBucket,
-    },
-
-    Route{
         "BucketExist",
         "POST",
         "/bucketexists",

@@ -22,39 +22,39 @@ omg build
 
 ##### Bucket Exists
 ```sh
-$ omg run existsbucket  -a name=<*BUCKET_NAME*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run existsbucket  -a name=<*BUCKET_NAME*> -e endpoint=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Create Bucket
 ```sh
-$ omg run makebucket  -a name=<*BUCKET_NAME*> -a location=<*ENTER_REGION*>  -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run makebucket  -a name=<*BUCKET_NAME*> -a location=<*ENTER_REGION*>  -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Get Bucket List
 ```sh
-$ omg run listbuckets -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run listbuckets -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Get Bucket Object List
 ```sh
-$ omg run listobjects  -a name=<*BUCKET_NAME*> -a objectprefix=<*OBJECT_PREFIX*> -a recursive=<*TRUE/FALSE*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run listobjects  -a name=<*BUCKET_NAME*> -a objectprefix=<*OBJECT_PREFIX*> -a recursive=<*TRUE/FALSE*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Get Bucket Object
 ```sh
-$ omg run getobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -a filepath=<*FILE_PATH*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run getobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -a filepath=<*FILE_PATH*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Put Bucket Object
 ```sh
-$ omg run putobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -e endpoint="play.minio.io:9000" -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run putobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Copy Bucket Object
 ```sh
-$ omg run copyobject  -a srcbucketname=<*SRC_BUCKET_NAME*> -a srcobjectname=<*SRC_OBJECT_NAME*> -a dstbucketname=<*DST_BUCKET_NAME*> -a dstobjectname=<*DST_OBJECT_NAME*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run copyobject  -a srcbucketname=<*SRC_BUCKET_NAME*> -a srcobjectname=<*SRC_OBJECT_NAME*> -a dstbucketname=<*DST_BUCKET_NAME*> -a dstobjectname=<*DST_OBJECT_NAME*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Stat Bucket Object
 ```sh
-$ omg run statobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run statobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 ##### Put File Bucket Object
 ```sh
-$ omg run fputobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -a filepath=<*FILE_PATH*> -e endpoint=<*ENTER_ENDPOINT*> -e accessKeyID=<*ACCESS_KEY_ID*> -e secretAccessKey=<*SECRET_ACCESS_KEY*>
+$ omg run fputobject  -a name=<*BUCKET_NAME*> -a objectname=<*OBJECT_NAME*> -a filepath=<*FILE_PATH*> -e END_POINT=<*ENTER_ENDPOINT*> -e ACCESS_KEY_ID=<*ACCESS_KEY_ID*> -e SECRET_ACCESS_KEY=<*SECRET_ACCESS_KEY*>
 ```
 
 ## License
