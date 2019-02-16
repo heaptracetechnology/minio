@@ -40,13 +40,6 @@ var routes = Routes{
     },
 
     Route{
-        "GetObjectList",
-        "POST",
-        "/getobjectlist",
-        ObjectOperation.GetObjectList,
-    },
-
-    Route{
         "GetObject",
         "POST",
         "/getobject",

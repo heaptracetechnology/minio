@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/minio/minio-go"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,8 +24,8 @@ type BucketObject struct {
 }
 
 type Message struct {
-    Success string `json:"success"`
-    Message string `json:"message"`
+	Success string `json:"success"`
+	Message string `json:"message"`
 }
 
 // ********** MinioClient **********
@@ -44,34 +45,34 @@ func MinioClient() (*minio.Client, error) {
 }
 
 // ********** GetObjectList **********
-func GetObjectList(w http.ResponseWriter, r *http.Request) {
+// func GetObjectList(w http.ResponseWriter, r *http.Request) {
 
-	minioClient, err := MinioClient()
+// 	minioClient, err := MinioClient()
 
-	b, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+// 	b, err := ioutil.ReadAll(r.Body)
+// 	defer r.Body.Close() //defer => work as finally block(ensure that a function call is performed later in a program’s execution)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
 
-	// Unmarshal
-	var bucketobj BucketObject
-	err = json.Unmarshal(b, &bucketobj)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	doneCh := make(chan struct{})
+// 	// Unmarshal
+// 	var bucketobj BucketObject
+// 	err = json.Unmarshal(b, &bucketobj)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
+// 	doneCh := make(chan struct{})
 
-	// Indicate to our routine to exit cleanly upon return.
-	defer close(doneCh)
-	isRecursive := true
+// 	// Indicate to our routine to exit cleanly upon return.
+// 	defer close(doneCh)
+// 	isRecursive := true
 
-	objectCh := minioClient.ListObjects(bucketobj.Name, bucketobj.Prefix, isRecursive, doneCh)
-	bytes, _ := json.Marshal(objectCh)
-	writeJsonResponse(w, bytes)
-}
+// 	objectCh := minioClient.ListObjects(bucketobj.Name, bucketobj.Prefix, isRecursive, doneCh)
+// 	bytes, _ := json.Marshal(objectCh)
+// 	writeJsonResponse(w, bytes)
+// }
 
 // ********** GetObject **********
 func GetObject(w http.ResponseWriter, r *http.Request) {
@@ -155,7 +156,7 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg := Message{"true", "Successfully uploaded bytes: "+ string(n)}
+	msg := Message{"true", "Successfully uploaded bytes: " + string(n)}
 	msgbytes, _ := json.Marshal(msg)
 	writeJsonResponse(w, msgbytes)
 	return
@@ -188,7 +189,7 @@ func FPutObject(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, msgbytes)
 		return
 	}
-	msg := Message{"true", "Successfully uploaded bytes: "+ string(n)}
+	msg := Message{"true", "Successfully uploaded bytes: " + string(n)}
 	msgbytes, _ := json.Marshal(msg)
 	writeJsonResponse(w, msgbytes)
 	return
@@ -232,7 +233,7 @@ func CopyObject(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, msgbytes)
 		return
 	} else {
-		msg := Message{"true","Copy successful"}
+		msg := Message{"true", "Copy successful"}
 		msgbytes, _ := json.Marshal(msg)
 		writeJsonResponse(w, msgbytes)
 	}
@@ -304,4 +305,3 @@ func writeJsonResponse(w http.ResponseWriter, bytes []byte) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(bytes)
 }
-

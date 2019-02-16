@@ -117,31 +117,6 @@ actions:
         owner:
           help: owner detail with name and id
           type: object
-  listobjects: 
-    help: Lists objects in a bucket
-    http: 
-      port: 5000
-      method: post
-      path: /getobjectlist
-      contentType: application/json
-    arguments:
-      name:
-        type: string
-        in: requestBody
-        required: true
-        help: Name of the bucket
-      objectprefix:
-        type: string
-        in: requestBody
-        help: Prefix of objects to be listed
-      recursive:
-        type: boolean
-        in: requestBody
-        required: true
-        help: Listing type(true indicates recursive style listing and false indicates directory style listing delimited by '/'.)
-    output:
-      contentType: application/json
-      type: string
   getobject: 
     help: Returns a stream of the object data
     http: 
