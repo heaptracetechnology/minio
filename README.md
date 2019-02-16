@@ -32,10 +32,6 @@ $ omg run makebucket  -a name=<BUCKET_NAME> -a location=<ENTER_REGION>  -e END_P
 ```sh
 $ omg run listbuckets -e END_POINT=<ENTER_ENDPOINT> -e ACCESS_KEY_ID=<ACCESS_KEY_ID> -e SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
 ```
-##### Get Bucket Object List
-```sh
-$ omg run listobjects  -a name=<BUCKET_NAME> -a objectprefix=<OBJECT_PREFIX> -a recursive=<TRUE/FALSE> -e END_POINT=<ENTER_ENDPOINT> -e ACCESS_KEY_ID=<ACCESS_KEY_ID> -e SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
-```
 ##### Get Bucket Object
 ```sh
 $ omg run getobject  -a name=<BUCKET_NAME> -a objectname=<OBJECT_NAME> -a filepath=<FILE_PATH> -e END_POINT=<ENTER_ENDPOINT> -e ACCESS_KEY_ID=<ACCESS_KEY_ID> -e SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
