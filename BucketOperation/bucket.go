@@ -3,6 +3,7 @@ package BucketOperation
 import (
 	"encoding/json"
 	"fmt"
+	result "github.com/heaptracetechnology/minio/result"
 	"github.com/minio/minio-go"
 	"io/ioutil"
 	"log"
